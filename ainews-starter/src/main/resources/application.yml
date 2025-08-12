@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: ainews-runr
+  profiles:
+    active: dev
+  config:
+    import:
+      - optional:classpath:application-common.yml
+      - nacos:ainews-runr.properties?group=DEFAULT_GROUP&username=service&password=service
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      username: service
+      password: service
+      discovery:
+        enabled: true
+        username: service
+        password: service
+        access-key: service
+        secret-key: service
+      config:
+        enabled: true
+        server-addr: localhost:8848
+        username: service
+        password: service
+        access-key: service
+        secret-key: service
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+        port: 8719
+      eager: true
+  datasource:
+    url: jdbc:mysql://${db_host:localhost}:3306/ai_news?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: ${db_password:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8080
+
+jobrunr:
+  database:
+    type: sql
+    table-prefix: ainews_
+  background-job-server:
+    enabled: true
+    poll-interval-in-seconds: 5
+  dashboard:
+    enabled: true
+    port: 8000
+  job-scheduler:
+    enabled: true
+  jobs:
+    default-number-of-retries: 5
+
+logging:
+  level:
+    jobrunr: INFO
