@@ -1,8 +1,8 @@
 package com.mortis.ainews.application.task.workflow;
 
 
-import com.mortis.ainews.interfaces.activities.IHelloWorldActivity;
-import com.mortis.ainews.interfaces.workflow.IHelloWorldWorkflow;
+import com.mortis.ainews.domain.activities.IHelloWorldActivity;
+import com.mortis.ainews.domain.workflow.IHelloWorldWorkflow;
 import io.temporal.activity.ActivityOptions;
 import io.temporal.workflow.Workflow;
 

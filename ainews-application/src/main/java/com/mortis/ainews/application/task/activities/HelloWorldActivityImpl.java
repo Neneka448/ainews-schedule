@@ -1,7 +1,7 @@
 package com.mortis.ainews.application.task.activities;
 
 
-import com.mortis.ainews.interfaces.activities.IHelloWorldActivity;
+import com.mortis.ainews.domain.activities.IHelloWorldActivity;
 import org.springframework.stereotype.Component;
 
 

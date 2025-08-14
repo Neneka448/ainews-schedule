@@ -2,7 +2,7 @@ package com.mortis.ainews.application.controller;
 
 import com.mortis.ainews.application.enums.TemporalNamespaceEnum;
 import com.mortis.ainews.application.enums.TemporalTaskTypeEnum;
-import com.mortis.ainews.interfaces.workflow.IHelloWorldWorkflow;  // 导入接口
+import com.mortis.ainews.domain.workflow.IHelloWorldWorkflow;  // 导入接口
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowOptions;
 import lombok.Data;

@@ -1,7 +1,9 @@
-package com.mortis.ainews.application.config;
+package com.mortis.ainews.application.helper;
 
 
+import com.mortis.ainews.application.enums.TemporalTaskTypeEnum;
 import com.mortis.ainews.application.task.activities.HelloWorldActivityImpl;
+import com.mortis.ainews.application.task.workflow.InfoProcessWorkflowImpl;
 import io.temporal.worker.Worker;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -9,13 +11,27 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 @Data
 @Slf4j
-public class TemporalMap {
+public class TemporalWorkflowMappingHelper {
     private final HelloWorldActivityImpl helloWorldActivityImpl;
+
+    private final Map<TemporalTaskTypeEnum, Class<?>> workflowMap = Map.ofEntries(
+            Map.entry(
+                    TemporalTaskTypeEnum.SEND_USER_NEWS_BY_EMAIL,
+                    InfoProcessWorkflowImpl.class
+            )
+    );
+
+    public void registerWorkflowToWorker(Worker worker) {
+        workflowMap.values()
+                .forEach(worker::registerWorkflowImplementationTypes);
+    }
 
     public void registerActivitiesToWorker(Worker worker) {
         // 使用反射获取所有字段
@@ -47,5 +63,19 @@ public class TemporalMap {
                 );
             }
         }
+    }
+
+
+    public Optional<Class<?>> getWorkflowClassByType(TemporalTaskTypeEnum type) {
+        return Optional.ofNullable(workflowMap.get(type));
+    }
+
+    public Optional<Class<?>> getInterfaceClassByType(TemporalTaskTypeEnum type) {
+        var interfaces = workflowMap.get(type)
+                .getInterfaces();
+        if (interfaces.length > 0) {
+            return Optional.of(interfaces[0]);
+        }
+        return Optional.empty();
     }
 }

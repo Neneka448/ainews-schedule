@@ -1,4 +1,4 @@
-package com.mortis.ainews.interfaces.activities;
+package com.mortis.ainews.domain.activities;
 
 
 import io.temporal.activity.ActivityInterface;

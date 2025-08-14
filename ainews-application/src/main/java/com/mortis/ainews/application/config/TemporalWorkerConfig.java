@@ -1,6 +1,7 @@
 package com.mortis.ainews.application.config;
 
 import com.mortis.ainews.application.enums.TemporalNamespaceEnum;
+import com.mortis.ainews.application.helper.TemporalWorkflowMappingHelper;
 import com.mortis.ainews.application.task.workflow.HelloWorldWorkflowImpl;
 import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
@@ -16,10 +17,12 @@ public class TemporalWorkerConfig {
     private static final Logger log = LoggerFactory.getLogger(TemporalWorkerConfig.class);
 
     private final WorkerFactory workerFactory;
-    private final TemporalMap temporalMap;
+    private final TemporalWorkflowMappingHelper temporalWorkflowMappingHelper;
 
-    public TemporalWorkerConfig(WorkerFactory workerFactory, TemporalMap temporalMap) {
-        this.temporalMap = temporalMap;
+    public TemporalWorkerConfig(
+            WorkerFactory workerFactory, TemporalWorkflowMappingHelper temporalWorkflowMappingHelper)
+    {
+        this.temporalWorkflowMappingHelper = temporalWorkflowMappingHelper;
         this.workerFactory = workerFactory;
     }
 
@@ -35,6 +38,9 @@ public class TemporalWorkerConfig {
                 TemporalNamespaceEnum.Job.getValue(),
                 jobWorkerOptions
         );
+        temporalWorkflowMappingHelper.registerWorkflowToWorker(jobWorker);
+        temporalWorkflowMappingHelper.registerActivitiesToWorker(jobWorker);
+
 
         // TODO
         WorkerOptions pipelineWorkerOptions = WorkerOptions.newBuilder()
@@ -45,8 +51,7 @@ public class TemporalWorkerConfig {
                 pipelineWorkerOptions
         );
 
-        jobWorker.registerWorkflowImplementationTypes(HelloWorldWorkflowImpl.class);
-        temporalMap.registerActivitiesToWorker(jobWorker);
+
         log.info("Starting Temporal WorkerFactory...");
         workerFactory.start();
         log.info("Temporal WorkerFactory started successfully.");

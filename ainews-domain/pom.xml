@@ -8,8 +8,8 @@
         <artifactId>ainews-schedule</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>ainews-interfaces</artifactId>
-    <name>ainews-interfaces</name>
+    <artifactId>ainews-domain</artifactId>
+    <name>ainews-domain</name>
     <description>Domain model: entities, value objects, events</description>
 
 

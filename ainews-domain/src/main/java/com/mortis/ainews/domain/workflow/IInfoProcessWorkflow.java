@@ -1,11 +1,13 @@
-package com.mortis.ainews.interfaces.workflow;
+package com.mortis.ainews.domain.workflow;
 
 
 import io.temporal.workflow.WorkflowInterface;
 import io.temporal.workflow.WorkflowMethod;
 
 @WorkflowInterface
-public interface IHelloWorldWorkflow {
+public interface IInfoProcessWorkflow {
+    
+
     @WorkflowMethod
-    String sayHello(String name);
+    void process();
 }
