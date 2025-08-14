@@ -14,17 +14,6 @@ public interface UserScheduleRelConverter {
     @Mapping(target = "scheduleId", source = "id.scheduleId")
     UserScheduleRelDO toUserScheduleRelDO(UserScheduleRel userScheduleRel);
 
-    @Mapping(target = "id.userId", source = "userId")
-    @Mapping(target = "id.scheduleId", source = "scheduleId")
+    @Mapping(target = "id", expression = "java(new UserScheduleId(userScheduleRelDO.getUserId(), userScheduleRelDO.getScheduleId()))")
     UserScheduleRel toUserScheduleRel(UserScheduleRelDO userScheduleRelDO);
-
-    default UserScheduleId createUserScheduleId(Long userId, Long scheduleId) {
-        if (userId == null || scheduleId == null) {
-            return null;
-        }
-        return new UserScheduleId(
-                userId,
-                scheduleId
-        );
-    }
 }

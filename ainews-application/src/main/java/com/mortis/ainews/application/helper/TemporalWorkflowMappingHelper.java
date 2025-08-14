@@ -1,7 +1,7 @@
 package com.mortis.ainews.application.helper;
 
 
-import com.mortis.ainews.application.enums.TemporalTaskTypeEnum;
+import com.mortis.ainews.domain.enums.TemporalTaskTypeEnum;
 import com.mortis.ainews.application.task.activities.HelloWorldActivityImpl;
 import com.mortis.ainews.application.task.workflow.InfoProcessWorkflowImpl;
 import io.temporal.worker.Worker;

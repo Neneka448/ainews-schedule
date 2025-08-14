@@ -14,17 +14,6 @@ public interface KeywordScheduleRelConverter {
     @Mapping(target = "scheduleId", source = "id.scheduleId")
     KeywordScheduleRelDO toKeywordScheduleRelDO(KeywordScheduleRel keywordScheduleRel);
 
-    @Mapping(target = "id.keywordId", source = "keywordId")
-    @Mapping(target = "id.scheduleId", source = "scheduleId")
+    @Mapping(target = "id", expression = "java(new KeywordScheduleId(keywordScheduleRelDO.getKeywordId(), keywordScheduleRelDO.getScheduleId()))")
     KeywordScheduleRel toKeywordScheduleRel(KeywordScheduleRelDO keywordScheduleRelDO);
-
-    default KeywordScheduleId createKeywordScheduleId(Long keywordId, Long scheduleId) {
-        if (keywordId == null || scheduleId == null) {
-            return null;
-        }
-        return new KeywordScheduleId(
-                keywordId,
-                scheduleId
-        );
-    }
 }

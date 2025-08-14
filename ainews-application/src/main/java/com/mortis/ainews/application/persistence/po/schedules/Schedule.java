@@ -1,5 +1,6 @@
 package com.mortis.ainews.application.persistence.po.schedules;
 
+import com.mortis.ainews.domain.enums.TemporalTaskTypeEnum;
 import com.mortis.ainews.domain.model.ScheduleSpecDO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -35,6 +36,10 @@ public class Schedule {
     @JdbcTypeCode(SqlTypes.JSON)
     private ScheduleSpecDO spec;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "workflow_type", nullable = false, length = 64)
+    private TemporalTaskTypeEnum workflowType;
 
     @Column(name = "deleted")
     private int deleted;

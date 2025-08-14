@@ -1,7 +1,9 @@
 package com.mortis.ainews.domain.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Each field can be one of:
@@ -15,6 +17,8 @@ import lombok.Data;
  */
 @Data
 @JsonSerialize
+@AllArgsConstructor
+@NoArgsConstructor
 public class ScheduleSpecDO {
     private String second;
     private String minute;

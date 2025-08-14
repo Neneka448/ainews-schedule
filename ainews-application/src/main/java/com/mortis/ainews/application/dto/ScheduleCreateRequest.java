@@ -1,7 +1,7 @@
 package com.mortis.ainews.application.dto;
 
 
-import com.mortis.ainews.application.enums.TemporalTaskTypeEnum;
+import com.mortis.ainews.domain.enums.TemporalTaskTypeEnum;
 import lombok.Data;
 
 import java.util.List;

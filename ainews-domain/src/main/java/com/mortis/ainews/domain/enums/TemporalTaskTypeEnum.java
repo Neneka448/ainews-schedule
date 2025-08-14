@@ -1,4 +1,4 @@
-package com.mortis.ainews.application.enums;
+package com.mortis.ainews.domain.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
