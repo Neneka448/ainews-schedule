@@ -1,5 +1,6 @@
 package com.mortis.ainews.application.persistence.po.schedules;
 
+import com.mortis.ainews.domain.enums.ScheduleStatusEnum;
 import com.mortis.ainews.domain.enums.TemporalTaskTypeEnum;
 import com.mortis.ainews.domain.model.ScheduleSpecDO;
 import jakarta.persistence.*;
@@ -40,6 +41,11 @@ public class Schedule {
     @Enumerated(EnumType.STRING)
     @Column(name = "workflow_type", nullable = false, length = 64)
     private TemporalTaskTypeEnum workflowType;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    private ScheduleStatusEnum status;
 
     @Column(name = "deleted")
     private int deleted;

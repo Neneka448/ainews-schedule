@@ -8,7 +8,7 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ScheduleConverter {
 
-    ScheduleDO toScheduleDO(Schedule schedule);
+    ScheduleDO toDO(Schedule schedule);
 
-    Schedule toSchedule(ScheduleDO scheduleDO);
+    Schedule toPO(ScheduleDO scheduleDO);
 }

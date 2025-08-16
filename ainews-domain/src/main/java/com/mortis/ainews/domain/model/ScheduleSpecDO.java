@@ -23,7 +23,6 @@ public class ScheduleSpecDO {
     private String second;
     private String minute;
     private String hour;
-    private String day;
     /**
      * abbr of month name: jan/feb/mar/apr/may/jun/jul/aug/sep/oct/nov/dec
      * 1-12
@@ -33,7 +32,7 @@ public class ScheduleSpecDO {
     private String dayOfMonth;
     /**
      * week name: monday/tuesday/wednesday/thursday/friday/saturday/sunday
-     * 0-6/1-7均可
+     * 0-6, 0 is sunday
      */
     private String dayOfWeek;
 }

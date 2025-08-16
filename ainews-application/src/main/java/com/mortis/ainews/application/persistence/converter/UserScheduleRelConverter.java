@@ -12,8 +12,8 @@ public interface UserScheduleRelConverter {
 
     @Mapping(target = "userId", source = "id.userId")
     @Mapping(target = "scheduleId", source = "id.scheduleId")
-    UserScheduleRelDO toUserScheduleRelDO(UserScheduleRel userScheduleRel);
+    UserScheduleRelDO toDO(UserScheduleRel userScheduleRel);
 
     @Mapping(target = "id", expression = "java(new UserScheduleId(userScheduleRelDO.getUserId(), userScheduleRelDO.getScheduleId()))")
-    UserScheduleRel toUserScheduleRel(UserScheduleRelDO userScheduleRelDO);
+    UserScheduleRel toPO(UserScheduleRelDO userScheduleRelDO);
 }
