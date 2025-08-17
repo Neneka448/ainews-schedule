@@ -11,6 +11,7 @@ import com.mortis.ainews.application.persistence.converter.UserSubscriptionRelCo
 import com.mortis.ainews.application.persistence.converter.ScheduleConverter;
 import com.mortis.ainews.application.persistence.converter.UserScheduleRelConverter;
 import com.mortis.ainews.application.persistence.converter.KeywordScheduleRelConverter;
+import com.mortis.ainews.application.persistence.converter.WorkflowExecResultConverter;
 
 @Component
 @RequiredArgsConstructor
@@ -22,4 +23,5 @@ public class ConverterFacade {
     public final ScheduleConverter scheduleConverter;
     public final UserScheduleRelConverter userScheduleRelConverter;
     public final KeywordScheduleRelConverter keywordScheduleRelConverter;
+    public final WorkflowExecResultConverter workflowExecResultConverter;
 }
