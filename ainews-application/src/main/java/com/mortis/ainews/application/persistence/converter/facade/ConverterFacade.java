@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+import com.mortis.ainews.application.persistence.converter.AiNewsSearchContentConverter;
 import com.mortis.ainews.application.persistence.converter.KeywordConverter;
 import com.mortis.ainews.application.persistence.converter.UserConverter;
 import com.mortis.ainews.application.persistence.converter.UserSubscriptionRelConverter;
@@ -14,6 +15,7 @@ import com.mortis.ainews.application.persistence.converter.KeywordScheduleRelCon
 @Component
 @RequiredArgsConstructor
 public class ConverterFacade {
+    public final AiNewsSearchContentConverter aiNewsSearchContentConverter;
     public final KeywordConverter keywordConverter;
     public final UserConverter userConverter;
     public final UserSubscriptionRelConverter userSubscriptionRelConverter;
