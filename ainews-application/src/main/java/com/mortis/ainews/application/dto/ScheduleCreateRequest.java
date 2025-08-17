@@ -38,7 +38,7 @@ public class ScheduleCreateRequest {
     @Positive(message = "用户ID必须为正数")
     private Long userId;
 
-    private Map<String, String> workflowParams;
+    private Optional<Map<String, String>> workflowParams;
 
     private Optional<CreateScheduleOptDTO> createScheduleOpt;
 }
