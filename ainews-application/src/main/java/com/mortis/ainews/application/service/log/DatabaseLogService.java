@@ -82,7 +82,7 @@ public class DatabaseLogService {
             Long resolvedBelongId = logHelper.resolveBelongId(logType, belongId);
             Map<String, Object> processedExtra = logHelper.parseExtraData(logType, extraData);
             
-            AiNewsLog logEntry = new AiNewsLog(level, message, logType, resolvedBelongId, processedExtra);
+            AiNewsLog logEntry = new AiNewsLog(level, logType, message, resolvedBelongId, processedExtra);
             logRepository.save(logEntry);
             
         } catch (Exception e) {

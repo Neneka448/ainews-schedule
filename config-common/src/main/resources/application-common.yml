@@ -68,6 +68,6 @@ logging:
     com.alibaba.cloud: INFO
     com.alibaba.nacos: INFO
     org.jobrunr: INFO
+    org.springframework.ai: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId:-},%X{spanId:-}] %logger{36} - %msg%n"
-
