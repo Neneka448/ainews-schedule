@@ -2,7 +2,8 @@ package com.mortis.ainews.domain.activities;
 
 
 import com.mortis.ainews.domain.model.InfoProcessData;
-import com.mortis.ainews.domain.model.InfoProcessMetadata;
+import com.mortis.ainews.domain.model.KeywordDO;
+import com.mortis.ainews.domain.model.KeywordRelatedContent;
 import io.temporal.activity.ActivityInterface;
 
 import java.util.List;
@@ -12,11 +13,12 @@ public interface IInfoProcessActivities {
 
     InfoProcessData fetchMetadata(Long userId, Long scheduleId);
 
-    List<String> fetchContent(String content);
+    KeywordRelatedContent fetchContent(KeywordDO keyword);
 
-    String process(List<String> contents, InfoProcessData processData);
+    String process(List<KeywordRelatedContent> contents, InfoProcessData processData);
 
-    String save(String processedData, List<Long> contentIds, InfoProcessData processData);
+    void save(String processedData, List<KeywordRelatedContent> contentIds, InfoProcessData processData);
 
-    String notifyUser();
+    void notifyUser(String info);
+
 }

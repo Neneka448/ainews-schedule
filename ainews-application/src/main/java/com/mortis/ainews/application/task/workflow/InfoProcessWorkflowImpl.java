@@ -33,24 +33,29 @@ public class InfoProcessWorkflowImpl implements IInfoProcessWorkflow {
         var contentPromises = data
             .getKeywordDOList()
             .stream()
-            .map(keywordDO -> Async.function(() -> activities.fetchContent(keywordDO.getContent())))
+            .map(keywordDO -> Async.function(() -> activities.fetchContent(keywordDO)))
             .toList();
 
-        var contents = Promise.allOf(contentPromises);
+        Promise.allOf(contentPromises);
+
+        var contents = contentPromises
+            .stream()
+            .map(Promise::get)
+            .toList();
 
 
-        //        var processedData = activities.process(
-        //            contents,
-        //            data
-        //        );
-        //        var savedData = activities.save(
-        //            processedData,
-        //            contents.get()
-        //                .stream()
-        //                .map(content -> content.getId())
-        //                .collect(Collectors.toList()),
-        //            data
-        //        ););
+        var processedData = activities.process(
+            contents,
+            data
+        );
+
+        activities.save(
+            processedData,
+            contents,
+            data
+        );
+
+        activities.notifyUser(processedData);
 
     }
 }

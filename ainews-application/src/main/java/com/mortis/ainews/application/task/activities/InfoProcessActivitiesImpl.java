@@ -2,14 +2,13 @@ package com.mortis.ainews.application.task.activities;
 
 
 import ai.z.openapi.service.web_search.WebSearchRequest;
-import com.mortis.ainews.application.persistence.repository.interfaces.ScheduleRepository;
-import com.mortis.ainews.application.persistence.repository.interfaces.UserRepository;
-import com.mortis.ainews.application.persistence.repository.interfaces.UserScheduleRepository;
 import com.mortis.ainews.application.service.business.ScheduleService;
 import com.mortis.ainews.application.service.facility.ZhipuAIService;
 import com.mortis.ainews.domain.activities.IInfoProcessActivities;
 import com.mortis.ainews.domain.model.InfoProcessData;
 import com.mortis.ainews.domain.model.InfoProcessMetadata;
+import com.mortis.ainews.domain.model.KeywordDO;
+import com.mortis.ainews.domain.model.KeywordRelatedContent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -40,34 +39,39 @@ public class InfoProcessActivitiesImpl implements IInfoProcessActivities {
 
 
     @Override
-    public List<String> fetchContent(String content) {
+    public KeywordRelatedContent fetchContent(KeywordDO keywordDO) {
         var resp = zhipuAIService.search(WebSearchRequest
             .builder()
             .searchEngine("search_pro")
-            .searchQuery(content)
+            .searchQuery(keywordDO.getContent())
             .count(15)
             .searchRecencyFilter("oneWeek")
             .contentSize("high")
             .build());
-        return resp
-            .stream()
-            .map(item -> "<title>\n" + item.getTitle() + "</title>\n" + "<content>\n" +
-                item.getContent() + "</content>\n")
-            .toList();
+        return KeywordRelatedContent
+            .builder()
+            .keywordDO(keywordDO)
+            .contents(resp
+                .stream()
+                .map(item -> "<title>\n" + item.getTitle() + "</title>\n" + "<content>\n" +
+                    item.getContent() + "</content>\n")
+                .toList())
+            .build();
     }
 
     @Override
-    public String process(List<String> contents, InfoProcessData processData) {
+    public String process(List<KeywordRelatedContent> contents, InfoProcessData processData) {
         return "";
     }
 
     @Override
-    public String save(String processedData, List<Long> contentIds, InfoProcessData processData) {
-        return "";
+    public void save(String processedData, List<KeywordRelatedContent> contentIds, InfoProcessData processData) {
+
     }
 
     @Override
-    public String notifyUser() {
-        return "";
+    public void notifyUser(String info) {
+
     }
+
 }
