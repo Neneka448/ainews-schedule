@@ -2,7 +2,9 @@ package com.mortis.ainews.application.task.activities;
 
 
 import ai.z.openapi.service.web_search.WebSearchRequest;
+import com.mortis.ainews.application.constant.PromptTemplate;
 import com.mortis.ainews.application.service.business.ScheduleService;
+import com.mortis.ainews.application.service.facility.SpringAiService;
 import com.mortis.ainews.application.service.facility.ZhipuAIService;
 import com.mortis.ainews.domain.activities.IInfoProcessActivities;
 import com.mortis.ainews.domain.model.InfoProcessData;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ public class InfoProcessActivitiesImpl implements IInfoProcessActivities {
 
     private final ScheduleService scheduleService;
     private final ZhipuAIService zhipuAIService;
+    private final SpringAiService springAiService;
 
     @Override
     public InfoProcessData fetchMetadata(Long userId, Long scheduleId) {
@@ -53,15 +57,28 @@ public class InfoProcessActivitiesImpl implements IInfoProcessActivities {
             .keywordDO(keywordDO)
             .contents(resp
                 .stream()
-                .map(item -> "<title>\n" + item.getTitle() + "</title>\n" + "<content>\n" +
-                    item.getContent() + "</content>\n")
+                .map(item -> "<News_item>\n<title>\n" + item.getTitle() + "</title>\n" + "<content>\n" +
+                    item.getContent() + "</content>\n</News_item>")
                 .toList())
             .build();
     }
 
     @Override
     public String process(List<KeywordRelatedContent> contents, InfoProcessData processData) {
-        return "";
+        return springAiService.chatWithTemplate(
+            PromptTemplate.News_Aggregate_PromptTemplate,
+            Map.ofEntries(Map.entry(
+                "newsContent",
+                String.join(
+                    "",
+                    contents
+                        .stream()
+                        .map(KeywordRelatedContent::getContents)
+                        .flatMap(List::stream)
+                        .toList()
+                )
+            ))
+        );
     }
 
     @Override
