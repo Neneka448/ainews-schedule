@@ -26,15 +26,24 @@ spring:
         access-key: service
         secret-key: service
     sentinel:
+      enabled: false
       transport:
         dashboard: localhost:8080
         port: 8719
       eager: true
   datasource:
-    url: jdbc:mysql://${db_host:localhost}:3306/ai_news?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${db_host:localhost}:3306/ai_news?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&connectTimeout=10000&socketTimeout=60000&tcpKeepAlive=true
     username: root
     password: ${db_password:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000        # 10 min
+      max-lifetime: 1800000       # 30 min, 小于 MySQL wait_timeout
+      keepalive-time: 300000      # 5 min 主动保活
+      connection-timeout: 20000   # 20 s 获取连接超时
+      validation-timeout: 5000    # 5 s 校验超时
 
 server:
   port: 8080
@@ -54,6 +63,18 @@ jobrunr:
   jobs:
     default-number-of-retries: 5
 
+management:
+  tracing:
+    enabled: false
+
 logging:
   level:
     jobrunr: INFO
+    io.netty.resolver.dns: OFF
+    io.netty.resolver.dns.macos: OFF
+    io.netty.resolver.dns.DnsServerAddressStreamProviders: OFF
+
+app:
+  logging:
+    db:
+      enabled: false

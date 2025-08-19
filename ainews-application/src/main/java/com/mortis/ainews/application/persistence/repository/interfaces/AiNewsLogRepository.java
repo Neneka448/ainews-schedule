@@ -21,7 +21,8 @@ public interface AiNewsLogRepository extends JpaRepository<AiNewsLog, Long> {
 
     /**
      * Find logs by log type
-     * @param type log type
+     *
+     * @param type     log type
      * @param pageable pagination information
      * @return page of logs
      */
@@ -29,7 +30,8 @@ public interface AiNewsLogRepository extends JpaRepository<AiNewsLog, Long> {
 
     /**
      * Find logs by log level
-     * @param level log level
+     *
+     * @param level    log level
      * @param pageable pagination information
      * @return page of logs
      */
@@ -37,6 +39,7 @@ public interface AiNewsLogRepository extends JpaRepository<AiNewsLog, Long> {
 
     /**
      * Find logs by belong_id
+     *
      * @param belongId entity ID
      * @param pageable pagination information
      * @return page of logs
@@ -45,7 +48,8 @@ public interface AiNewsLogRepository extends JpaRepository<AiNewsLog, Long> {
 
     /**
      * Find logs by type and belong_id
-     * @param type log type
+     *
+     * @param type     log type
      * @param belongId entity ID
      * @param pageable pagination information
      * @return page of logs
@@ -54,25 +58,29 @@ public interface AiNewsLogRepository extends JpaRepository<AiNewsLog, Long> {
 
     /**
      * Find logs within a time range
+     *
      * @param startTime start time
-     * @param endTime end time
-     * @param pageable pagination information
+     * @param endTime   end time
+     * @param pageable  pagination information
      * @return page of logs
      */
     Page<AiNewsLog> findByCreatedAtBetween(Instant startTime, Instant endTime, Pageable pageable);
 
     /**
      * Find logs by type and time range
-     * @param type log type
+     *
+     * @param type      log type
      * @param startTime start time
-     * @param endTime end time
-     * @param pageable pagination information
+     * @param endTime   end time
+     * @param pageable  pagination information
      * @return page of logs
      */
-    Page<AiNewsLog> findByTypeAndCreatedAtBetween(LogTypeEnum type, Instant startTime, Instant endTime, Pageable pageable);
+    Page<AiNewsLog> findByTypeAndCreatedAtBetween(
+        LogTypeEnum type, Instant startTime, Instant endTime, Pageable pageable);
 
     /**
      * Count logs by type
+     *
      * @param type log type
      * @return count of logs
      */
@@ -80,24 +88,25 @@ public interface AiNewsLogRepository extends JpaRepository<AiNewsLog, Long> {
 
     /**
      * Count logs by level
+     *
      * @param level log level
      * @return count of logs
      */
     long countByLevel(String level);
 
     /**
-     * Find recent logs by type (for monitoring purposes)
-     * @param type log type
-     * @param limit maximum number of logs to return
-     * @return list of recent logs
+     * Find recent logs by type (portable with Pageable instead of LIMIT)
+     *
+     * @param type     log type
+     * @param pageable use PageRequest.of(0, n) with sort by createdAt desc
      */
-    @Query("SELECT l FROM AiNewsLog l WHERE l.type = :type ORDER BY l.createdAt DESC LIMIT :limit")
-    List<AiNewsLog> findRecentLogsByType(@Param("type") LogTypeEnum type, @Param("limit") int limit);
+    Page<AiNewsLog> findByTypeOrderByCreatedAtDesc(LogTypeEnum type, Pageable pageable);
 
     /**
      * Find error logs within time range (for alerting)
+     *
      * @param startTime start time
-     * @param endTime end time
+     * @param endTime   end time
      * @return list of error logs
      */
     @Query("SELECT l FROM AiNewsLog l WHERE l.level = 'ERROR' AND l.createdAt BETWEEN :startTime AND :endTime ORDER BY l.createdAt DESC")

@@ -6,6 +6,7 @@ import com.mortis.ainews.application.service.log.DatabaseLogAppender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @RequiredArgsConstructor
 @Slf4j
+@ConditionalOnProperty(value = "app.logging.db.enabled", havingValue = "true", matchIfMissing = true)
 public class LoggingConfig {
 
     private final ApplicationContext applicationContext;
@@ -32,28 +34,31 @@ public class LoggingConfig {
     public void configureDatabaseLogging() {
         try {
             LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-            
+
             // Create and configure database appender
             DatabaseLogAppender databaseAppender = new DatabaseLogAppender();
             databaseAppender.setApplicationContext(applicationContext);
             databaseAppender.setContext(loggerContext);
             databaseAppender.setName("DATABASE");
-            
+
             // Start the appender
             databaseAppender.start();
-            
+
             // Add appender to root logger to capture all logs
             Logger rootLogger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
             rootLogger.addAppender(databaseAppender);
-            
+
             // Optionally, add to specific loggers for more targeted logging
             // Logger appLogger = loggerContext.getLogger("com.mortis.ainews");
             // appLogger.addAppender(databaseAppender);
-            
+
             log.info("Database logging appender configured successfully");
-            
+
         } catch (Exception e) {
-            log.error("Failed to configure database logging appender", e);
+            log.error(
+                "Failed to configure database logging appender",
+                e
+            );
         }
     }
 }

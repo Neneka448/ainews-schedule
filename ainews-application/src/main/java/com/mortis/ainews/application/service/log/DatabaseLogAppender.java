@@ -21,6 +21,11 @@ public class DatabaseLogAppender extends AppenderBase<ILoggingEvent> implements 
     private DatabaseLogService databaseLogService;
     private boolean initialized = false;
 
+    // 防止递归：过滤本包及相关服务类的日志
+    private static final String LOG_PACKAGE_PREFIX = "com.mortis.ainews.application.service.log";
+    private static final String SELF_FAILURE_MARK = "Failed to append log to database";
+    private static final String SERVICE_FAILURE_MARK = "Failed to store log to database";
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -43,9 +48,20 @@ public class DatabaseLogAppender extends AppenderBase<ILoggingEvent> implements 
 
     @Override
     protected void append(ILoggingEvent event) {
+        // 过滤本包日志，避免递归
+        String loggerName = event.getLoggerName();
+        if (loggerName != null && loggerName.startsWith(LOG_PACKAGE_PREFIX)) {
+            return;
+        }
+        // 过滤我们自身的失败标记消息，避免递归
+        String formattedMsg = event.getFormattedMessage();
+        if (formattedMsg != null && (formattedMsg.contains(SELF_FAILURE_MARK) || formattedMsg.contains(SERVICE_FAILURE_MARK))) {
+            return;
+        }
+
         // Initialize if needed
         initializeIfNeeded();
-        
+
         // Skip if service not available
         if (databaseLogService == null) {
             return;
@@ -53,22 +69,32 @@ public class DatabaseLogAppender extends AppenderBase<ILoggingEvent> implements 
 
         try {
             // Extract log information
-            String level = event.getLevel().toString();
-            String message = event.getFormattedMessage();
-            String loggerName = event.getLoggerName();
-            
+            String level = event
+                .getLevel()
+                .toString();
+            String message = formattedMsg;
+
             // Create extra data with context information
             Map<String, Object> extraData = createExtraData(event);
-            
+
             // Determine log type based on logger name or other criteria
             LogTypeEnum logType = determineLogType(loggerName);
-            
+
             // Store to database asynchronously
-            databaseLogService.storeLogAsync(level, message, logType, null, extraData);
-            
+            databaseLogService.storeLogAsync(
+                level,
+                message,
+                logType,
+                null,
+                extraData
+            );
+
         } catch (Exception e) {
             // Don't let logging errors affect the main application
-            addError("Failed to append log to database", e);
+            addError(
+                "Failed to append log to database",
+                e
+            );
         }
     }
 
@@ -77,25 +103,44 @@ public class DatabaseLogAppender extends AppenderBase<ILoggingEvent> implements 
      */
     private Map<String, Object> createExtraData(ILoggingEvent event) {
         Map<String, Object> extraData = new HashMap<>();
-        
+
         // Add thread information
-        extraData.put("thread_name", event.getThreadName());
-        
+        extraData.put(
+            "thread_name",
+            event.getThreadName()
+        );
+
         // Add logger information
-        extraData.put("logger_name", event.getLoggerName());
-        
+        extraData.put(
+            "logger_name",
+            event.getLoggerName()
+        );
+
         // Add MDC properties if available
         Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
         if (mdcPropertyMap != null && !mdcPropertyMap.isEmpty()) {
-            extraData.put("mdc", mdcPropertyMap);
+            extraData.put(
+                "mdc",
+                mdcPropertyMap
+            );
         }
-        
+
         // Add exception information if present
         if (event.getThrowableProxy() != null) {
-            extraData.put("exception_class", event.getThrowableProxy().getClassName());
-            extraData.put("exception_message", event.getThrowableProxy().getMessage());
+            extraData.put(
+                "exception_class",
+                event
+                    .getThrowableProxy()
+                    .getClassName()
+            );
+            extraData.put(
+                "exception_message",
+                event
+                    .getThrowableProxy()
+                    .getMessage()
+            );
         }
-        
+
         return extraData;
     }
 
@@ -109,7 +154,7 @@ public class DatabaseLogAppender extends AppenderBase<ILoggingEvent> implements 
         // Example:
         // if (loggerName.contains("schedule")) return LogTypeEnum.SCHEDULE;
         // if (loggerName.contains("user")) return LogTypeEnum.USER;
-        
+
         return LogTypeEnum.COMMON;
     }
 

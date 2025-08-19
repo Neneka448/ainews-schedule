@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.mortis.ainews.domain.model.InfoProcessWorkflowParams;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -45,7 +47,7 @@ public class TemporalScheduleService {
                     .newBuilder()
                     .setWorkflowType(
                         temporalWorkflowMappingHelper
-                            .getWorkflowClassByType(
+                            .getInterfaceClassByType(
                                 scheduleDO.getWorkflowType()
                             )
                             .orElseThrow()
@@ -58,9 +60,18 @@ public class TemporalScheduleService {
                                     userId,
                                     scheduleDO
                                 ))
+                            .setTaskQueue(
+                                temporalWorkflowMappingHelper.getTaskQueueByType(
+                                    scheduleDO.getWorkflowType()
+                                )
+                            )
                             .build()
                     )
-                    .setArguments(workflowParams)
+                    // 将参数改为工作流入参对象，避免类型不匹配
+                    .setArguments(new InfoProcessWorkflowParams(
+                        userId,
+                        scheduleDO.getId()
+                    ))
                     .build()
             )
             .setSpec(spec)
@@ -165,7 +176,7 @@ public class TemporalScheduleService {
      * 时分秒默认为0，其他默认为 every
      */
     private List<ScheduleRange> parseSpecItem(String type, String specItem) {
-        int defaultStart = 0;
+        int defaultStart = getDefaultStart(type);
         int defaultEnd = getDefaultEnd(type);
 
         if (specItem.equals("*")) {
@@ -205,7 +216,7 @@ public class TemporalScheduleService {
             }
             int start = Integer.parseInt(parts[0]);
             int step = Integer.parseInt(parts[1]);
-            if (start < defaultStart || start > defaultEnd || step < 0) {
+            if (start < defaultStart || start > defaultEnd || step <= 0) {
                 throw new IllegalArgumentException("Step out of bounds: " + specItem);
             }
             return List.of(new ScheduleRange(
@@ -219,13 +230,23 @@ public class TemporalScheduleService {
 
     }
 
+    private static int getDefaultStart(String type) {
+        return switch (type) {
+            case "second", "minute", "hour" -> 0;
+            case "dayOfMonth", "month" -> 1;
+            case "year" -> 2000;
+            case "dayOfWeek" -> 0; // 0-6
+            default -> throw new IllegalArgumentException("Invalid type: " + type);
+        };
+    }
+
     private static int getDefaultEnd(String type) {
         return switch (type) {
             case "second", "minute" -> 59;
             case "hour" -> 23;
             case "dayOfMonth" -> 31;
             case "month" -> 12;
-            case "year" -> 9999;
+            case "year" -> 2100;
             case "dayOfWeek" -> 6;
             default -> throw new IllegalArgumentException("Invalid type: " + type);
         };

@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 
 import java.util.List;
 import java.util.Map;
@@ -32,13 +34,16 @@ public class ScheduleCreateRequest {
 
     private String prompt;
 
-    private List<@Positive(message = "标签ID必须为正数") Long> tagIds;
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
+    private List<@Positive(message = "关键词ID必须为正数") Long> tagIds = List.of();
 
     @NotNull(message = "用户ID不能为空")
     @Positive(message = "用户ID必须为正数")
     private Long userId;
 
-    private Optional<Map<String, String>> workflowParams;
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
+    private Optional<Map<String, String>> workflowParams = Optional.empty();
 
-    private Optional<CreateScheduleOptDTO> createScheduleOpt;
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
+    private Optional<CreateScheduleOptDTO> createScheduleOpt = Optional.empty();
 }

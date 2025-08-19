@@ -58,7 +58,7 @@ public class AiNewsLog {
      * Log message content
      */
     @Lob
-    @Column(name = "message")
+    @Column(name = "message", columnDefinition = "LONGTEXT")
     private String message;
 
     /**

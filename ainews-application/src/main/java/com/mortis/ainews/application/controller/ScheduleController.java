@@ -44,7 +44,7 @@ public class ScheduleController {
             req.getScheduleName()
         );
 
-        var schedule = scheduleService.createSchedule(
+        var schedule = scheduleService.createScheduleWithKeywords(
             ScheduleDO
                 .builder()
                 .name(req.getScheduleName())
@@ -53,7 +53,8 @@ public class ScheduleController {
                 .workflowType(req.getWorkflowType())
                 .status(ScheduleStatusEnum.COMMIT)
                 .build(),
-            req.getUserId()
+            req.getUserId(),
+            req.getTagIds()
         );
 
         try {

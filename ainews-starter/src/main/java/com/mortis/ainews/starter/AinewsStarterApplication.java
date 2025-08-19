@@ -11,7 +11,10 @@ import org.springframework.context.annotation.ComponentScan;
 public class AinewsStarterApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AinewsStarterApplication.class, args);
+        SpringApplication.run(
+            AinewsStarterApplication.class,
+            args
+        );
     }
 
 }

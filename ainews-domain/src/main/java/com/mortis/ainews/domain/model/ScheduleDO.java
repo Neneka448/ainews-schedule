@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.Instant;
 
@@ -19,6 +21,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @Builder
 @JsonSerialize
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ScheduleDO extends AbstractStateMachine<ScheduleStatusEnum> implements ScheduleStateMachine {
     private Long id;
     private String name;
@@ -44,6 +47,7 @@ public class ScheduleDO extends AbstractStateMachine<ScheduleStatusEnum> impleme
     }
 
     @Override
+    @JsonIgnore
     public Object getEntityId() {
         return this.id;
     }

@@ -30,13 +30,50 @@ public class InfoProcessWorkflowImpl implements IInfoProcessWorkflow {
             params.getUserId(),
             params.getScheduleId()
         );
-        var contentPromises = data
-            .getKeywordDOList()
+
+        // 添加日志检查关键词列表
+        var keywordList = data.getKeywordDOList();
+        Workflow
+            .getLogger(InfoProcessWorkflowImpl.class)
+            .info(
+                "Found {} keywords to process",
+                keywordList.size()
+            );
+
+        if (keywordList.isEmpty()) {
+            Workflow
+                .getLogger(InfoProcessWorkflowImpl.class)
+                .warn("No keywords found, skipping content fetch");
+            return;
+        }
+
+        var contentPromises = keywordList
             .stream()
-            .map(keywordDO -> Async.function(() -> activities.fetchContent(keywordDO)))
+            .map(keywordDO -> {
+                Workflow
+                    .getLogger(InfoProcessWorkflowImpl.class)
+                    .info(
+                        "Starting fetchContent for keyword: {}",
+                        keywordDO.getContent()
+                    );
+                return Async.function(() -> activities.fetchContent(keywordDO));
+            })
             .toList();
 
-        Promise.allOf(contentPromises);
+        Workflow
+            .getLogger(InfoProcessWorkflowImpl.class)
+            .info(
+                "Created {} content promises, waiting for completion",
+                contentPromises.size()
+            );
+
+        Promise
+            .allOf(contentPromises)
+            .get();
+
+        Workflow
+            .getLogger(InfoProcessWorkflowImpl.class)
+            .info("All content fetch activities completed");
 
         var contents = contentPromises
             .stream()
